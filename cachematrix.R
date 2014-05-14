@@ -14,18 +14,16 @@
 ##            changed.
 ##          - setinverse: sets the cached inverse
 ##          - getinverse: returns the current inverse if cached
-# x is the original matrix.
-# i is the inverse. It is initialized to null.
 
-makeCacheMatrix <- function(x = matrix()) {
-    i <- NULL
+makeCacheMatrix <- function(originalMatrix = matrix()) {
+    inverseMatrix <- NULL
     set <- function(y) {
-        x <<- y
-        i <<- NULL
+        originalMatrix <<- y
+        inverseMatrix <<- NULL
     }
     get <- function() { x }
-    setinverse <- function(inverse) { i <<- inverse }
-    getinverse <- function() { i }
+    setinverse <- function(inverse) { inverseMatrix <<- inverse }
+    getinverse <- function() { inverseMatrix }
     list(set = set, get = get, setinverse = setinverse, getinverse = getinverse)
 }
 
@@ -38,8 +36,8 @@ makeCacheMatrix <- function(x = matrix()) {
 ## object and return its value. If it's cached it will just return value
 ## conteined in the special object.
 
-cacheSolve <- function(x, ...) {    
-    i <- x$getinverse()
+cacheSolve <- function(matrixObject, ...) {    
+    i <- matrixObject$getinverse()
     if(!is.null(i)) {
         # If the inverse is already cached, we just return it and inform that
         # it is cached data.
@@ -48,8 +46,8 @@ cacheSolve <- function(x, ...) {
     }
     # In case the inverse is not cached, it gets the original matrix,
     # calculates the inverted one, cache it and return it.
-    data <- x$get()
-    i <- solve(data, ...)
-    x$setinverse(i)
-    i        
+    data <- matrixObject$get()
+    inverseMatrix <- solve(data, ...)
+    matrixObject$setinverse(inverseMatrix)
+    inverseMatrix        
 }
